@@ -12,7 +12,6 @@ Library Book Management System
 
 ### 📦 Installation
 
-```bash
 # Clone the repository
 git clone https://github.com/arafatrahman862/Assingment3.git
 cd assignment3

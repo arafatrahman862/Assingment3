@@ -1,16 +1,16 @@
-import express, { Application, Request, Response } from 'express';
-import { bookRouter } from './app/controllers/book.controller';
-import { borrowRouter } from './app/controllers/borrow.controller';
+import express, { Application, Request, Response } from "express";
+import { bookRouter } from "./app/controllers/book.controller";
+import { borrowRouter } from "./app/controllers/borrow.controller";
 
 
 
 const app: Application = express();
 
-app.use(express.json())
+app.use(express.json());
 
 
 
-app.use('/api/books', bookRouter);
+app.use("/api/books", bookRouter);
 app.use("/api/borrow", borrowRouter );
 
 app.use((err: any, req: Request, res: Response, next: Function) => {
@@ -21,8 +21,8 @@ app.use((err: any, req: Request, res: Response, next: Function) => {
   });
 });
 
-app.get('/', (req: Request, res: Response) => {
-    res.send('Welcome to Library Management System');
+app.get("/", (req: Request, res: Response) => {
+    res.send("Welcome to Library Management System");
 });
 
 

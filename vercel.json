@@ -2,21 +2,14 @@
     "version": 2,
     "builds": [
         {
-            "src": "src/server.ts",
-            "use": "@vercel/node",
-            "config": {
-                "includeFiles": [
-                    "src/*/",
-                    "package.json"
-                    
-                ]
-            }
+            "src": "Assingment3/dist/server.js",
+            "use": "@vercel/node"
         }
     ],
     "routes": [
         {
             "src": "/(.*)",
-            "dest": "src/server.ts"
+            "dest": "Assingment3/dist/server.js"
         }
     ]
 }

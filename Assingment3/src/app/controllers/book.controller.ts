@@ -1,9 +1,9 @@
-import express from 'express';
-import { Book } from '../models/book.model';
+import express from "express";
+import { Book } from "../models/book.model";
 import { Request, Response } from "express";
 
 
-export const bookRouter = express.Router()
+export const bookRouter = express.Router();
 
 bookRouter.post("/create-book", async (req: Request, res: Response) => {
   const body = req.body;

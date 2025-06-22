@@ -5,39 +5,39 @@ import { Borrow } from "../models/borrow.model";
 
  export const borrowRouter = Router();
 
-// borrowRouter.post("/borrow-book", async (req: Request, res: Response) => {
-//   const body = req.body;
+borrowRouter.post("/borrow-book", async (req: Request, res: Response) => {
+  const body = req.body;
 
-//   try {
-//     const foundBook = await Book.findById(body.book);
+  try {
+    const foundBook = await Book.findById(body.book);
 
-//     if (!foundBook || foundBook.copies < body.quantity) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "Not enough copies available",
-//         error: "Insufficient stock",
-//       });
-//     }
+    if (!foundBook || foundBook.copies < body.quantity) {
+      return res.status(400).json({
+        success: false,
+        message: "Not enough copies available",
+        error: "Insufficient stock",
+      });
+    }
 
-//     foundBook.copies -= body.quantity;
-//     foundBook.checkAvailability?.();
-//     await foundBook.save();
+    foundBook.copies -= body.quantity;
+    foundBook.checkAvailability?.();
+    await foundBook.save();
 
-//     const borrow = await Borrow.create(body);
+    const borrow = await Borrow.create(body);
 
-//     res.status(201).json({
-//       success: true,
-//       message: "Book borrowed successfully",
-//       borrow,
-//     });
-//   } catch (error) {
-//     res.status(500).json({
-//       success: false,
-//       message: "Failed to borrow book",
-//       error,
-//     });
-//   }
-// });
+    res.status(201).json({
+      success: true,
+      message: "Book borrowed successfully",
+      borrow,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to borrow book",
+      error,
+    });
+  }
+});
 
 borrowRouter.get("/", async (_req: Request, res: Response) => {
   try {

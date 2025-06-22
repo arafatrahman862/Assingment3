@@ -8,7 +8,7 @@ const book_controller_1 = require("./app/controllers/book.controller");
 const borrow_controller_1 = require("./app/controllers/borrow.controller");
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
-app.use('/api/books', book_controller_1.bookRouter);
+app.use("/api/books", book_controller_1.bookRouter);
 app.use("/api/borrow", borrow_controller_1.borrowRouter);
 app.use((err, req, res, next) => {
     res.status(400).json({
@@ -17,7 +17,7 @@ app.use((err, req, res, next) => {
         error: err.message || err,
     });
 });
-app.get('/', (req, res) => {
-    res.send('Welcome to Library Management System');
+app.get("/", (req, res) => {
+    res.send("Welcome to Library Management System");
 });
 exports.default = app;
