@@ -14,7 +14,7 @@ Library Book Management System
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/assignment3.git
+git clone https://github.com/arafatrahman862/Assingment3.git
 cd assignment3
 
 # Install dependencies
