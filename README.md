@@ -1,0 +1,24 @@
+# Assignment 3
+Library Book Management System
+---
+
+# Project Setup
+- Node.js
+- npm
+- MongoDB Atlas or Local MongoDB
+- Git
+- Mongoose
+- Express js
+
+### 📦 Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/your-username/assignment3.git
+cd assignment3
+
+# Install dependencies
+npm install
+
+# Base URL
+http://localhost:5000/
