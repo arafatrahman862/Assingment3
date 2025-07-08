@@ -1,11 +1,11 @@
+
 import { Request, Response, Router } from "express";
 import { Book } from "../models/book.model";
 import { Borrow } from "../models/borrow.model";
 
 export const borrowRouter = Router();
 
-
-borrowRouter.post("/", async (req: Request, res: Response) => {
+borrowRouter.post("/", async (req: Request<{}, {}, any>, res: Response) => {
   const { book, quantity, dueDate } = req.body;
 
   if (!book || !quantity || !dueDate) {
@@ -15,7 +15,6 @@ borrowRouter.post("/", async (req: Request, res: Response) => {
     });
   }
 
-  // Validate date format
   const dueDateObj = new Date(dueDate);
   if (isNaN(dueDateObj.getTime())) {
     return res.status(400).json({
@@ -62,7 +61,6 @@ borrowRouter.post("/", async (req: Request, res: Response) => {
     });
   }
 });
-
 
 borrowRouter.get("/summary", async (_req: Request, res: Response) => {
   try {

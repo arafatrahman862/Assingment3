@@ -30,29 +30,34 @@ exports.bookRouter.get("/", (req, res) => __awaiter(void 0, void 0, void 0, func
         const genre = req.query.genre;
         const sortBy = req.query.sortBy || "createdAt";
         const sort = req.query.sort === "desc" ? -1 : 1;
+        const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 10;
-        let books;
-        if (genre) {
-            books = yield book_model_1.Book.find({ genre })
-                .sort({ [sortBy]: sort })
-                .limit(limit);
-        }
-        else {
-            books = yield book_model_1.Book.find()
-                .sort({ [sortBy]: sort })
-                .limit(limit);
-        }
+        const skip = (page - 1) * limit;
+        const filter = {};
+        if (genre)
+            filter.genre = genre;
+        const books = yield book_model_1.Book.find(filter)
+            .sort({ [sortBy]: sort })
+            .skip(skip)
+            .limit(limit);
+        const total = yield book_model_1.Book.countDocuments(filter);
         res.status(200).json({
             success: true,
             message: "Books retrieved successfully",
             books,
+            meta: {
+                page,
+                limit,
+                total,
+                totalPages: Math.ceil(total / limit),
+            },
         });
     }
     catch (error) {
         res.status(400).json({
             success: false,
             message: "Failed to retrieve books",
-            error,
+            error: error.message,
         });
     }
 }));

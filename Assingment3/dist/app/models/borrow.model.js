@@ -3,9 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Borrow = void 0;
 const mongoose_1 = require("mongoose");
 const borrowSchema = new mongoose_1.Schema({
-    book: { type: mongoose_1.Types.ObjectId, ref: "Book", required: true },
+    book: { type: mongoose_1.Schema.Types.ObjectId, ref: "Book", required: true },
     quantity: { type: Number, required: true, min: 1 },
-    dueDate: { type: Date, required: true },
+    dueDate: { type: String, required: true },
 }, {
     versionKey: false,
     timestamps: true,
