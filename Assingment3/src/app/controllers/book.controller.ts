@@ -23,31 +23,37 @@ bookRouter.get("/", async (req: Request, res: Response) => {
     const genre = req.query.genre as string;
     const sortBy = (req.query.sortBy as string) || "createdAt";
     const sort = (req.query.sort as string) === "desc" ? -1 : 1;
+    
+    const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
+    const skip = (page - 1) * limit;
 
-    let books;
+    const filter: Record<string, any> = {};
+    if (genre) filter.genre = genre;
 
-   
-    if (genre) {
-      books = await Book.find({ genre })
-        .sort({ [sortBy]: sort })
-        .limit(limit);
-    } else {
-      books = await Book.find()
-        .sort({ [sortBy]: sort })
-        .limit(limit);
-    }
+    const books = await Book.find(filter)
+      .sort({ [sortBy]: sort })
+      .skip(skip)
+      .limit(limit);
+
+    const total = await Book.countDocuments(filter);
 
     res.status(200).json({
       success: true,
       message: "Books retrieved successfully",
       books,
+      meta: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
     });
   } catch (error) {
     res.status(400).json({
       success: false,
       message: "Failed to retrieve books",
-      error,
+      error: (error as Error).message,
     });
   }
 });

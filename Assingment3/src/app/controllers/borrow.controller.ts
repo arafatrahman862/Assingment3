@@ -2,44 +2,69 @@ import { Request, Response, Router } from "express";
 import { Book } from "../models/book.model";
 import { Borrow } from "../models/borrow.model";
 
+export const borrowRouter = Router();
 
- export const borrowRouter = Router();
 
-borrowRouter.post("/borrow-book", async (req: Request, res: Response) => {
-  const body = req.body;
+borrowRouter.post("/", async (req: Request, res: Response) => {
+  const { book, quantity, dueDate } = req.body;
+
+  if (!book || !quantity || !dueDate) {
+    return res.status(400).json({
+      success: false,
+      message: "Missing required fields",
+    });
+  }
+
+  // Validate date format
+  const dueDateObj = new Date(dueDate);
+  if (isNaN(dueDateObj.getTime())) {
+    return res.status(400).json({
+      success: false,
+      message: "Invalid dueDate format",
+    });
+  }
 
   try {
-    const foundBook = await Book.findById(body.book);
+    const foundBook = await Book.findById(book);
+    if (!foundBook) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Book not found" });
+    }
 
-    if (!foundBook || foundBook.copies < body.quantity) {
+    if (foundBook.copies < quantity) {
       return res.status(400).json({
         success: false,
         message: "Not enough copies available",
-        error: "Insufficient stock",
       });
     }
 
-    foundBook.copies -= body.quantity;
-    foundBook.checkAvailability?.();
+    foundBook.copies -= quantity;
+    foundBook.available = foundBook.copies > 0;
     await foundBook.save();
 
-    const borrow = await Borrow.create(body);
+    const borrow = await Borrow.create({
+      book,
+      quantity,
+      dueDate: dueDateObj,
+    });
 
-    res.status(201).json({
+    return res.status(201).json({
       success: true,
       message: "Book borrowed successfully",
-      borrow,
+      data: borrow,
     });
   } catch (error) {
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: "Failed to borrow book",
-      error,
+      error: (error as Error).message,
     });
   }
 });
 
-borrowRouter.get("/", async (_req: Request, res: Response) => {
+
+borrowRouter.get("/summary", async (_req: Request, res: Response) => {
   try {
     const summary = await Borrow.aggregate([
       {
@@ -60,10 +85,8 @@ borrowRouter.get("/", async (_req: Request, res: Response) => {
       {
         $project: {
           _id: 0,
-          book: {
-            title: "$bookDetails.title",
-            isbn: "$bookDetails.isbn",
-          },
+          title: "$bookDetails.title",
+          isbn: "$bookDetails.isbn",
           totalQuantity: 1,
         },
       },
@@ -82,4 +105,3 @@ borrowRouter.get("/", async (_req: Request, res: Response) => {
     });
   }
 });
-
