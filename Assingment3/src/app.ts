@@ -9,7 +9,11 @@ const app: Application = express();
 app.use(express.json());
 
 
-app.use(cors()); 
+app.use(
+  cors({
+    origin: ["https://assingment-client.vercel.app"],
+  })
+); 
 app.use("/api/books", bookRouter);
 app.use("/api/borrow", borrowRouter );
 
