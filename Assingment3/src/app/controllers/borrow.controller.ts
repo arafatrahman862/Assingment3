@@ -5,37 +5,42 @@ import { Borrow } from "../models/borrow.model";
 
 export const borrowRouter = Router();
 
-borrowRouter.post("/", async (req: Request<{}, {}, any>, res: Response) => {
+borrowRouter.post("/", async (req: Request, res: Response) => {
   const { book, quantity, dueDate } = req.body;
 
   if (!book || !quantity || !dueDate) {
-    return res.status(400).json({
+    res.status(400).json({
       success: false,
       message: "Missing required fields",
     });
+    return;
   }
 
   const dueDateObj = new Date(dueDate);
   if (isNaN(dueDateObj.getTime())) {
-    return res.status(400).json({
+    res.status(400).json({
       success: false,
       message: "Invalid dueDate format",
     });
+    return;
   }
 
   try {
     const foundBook = await Book.findById(book);
     if (!foundBook) {
-      return res
-        .status(404)
-        .json({ success: false, message: "Book not found" });
+      res.status(404).json({
+        success: false,
+        message: "Book not found",
+      });
+      return;
     }
 
     if (foundBook.copies < quantity) {
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
         message: "Not enough copies available",
       });
+      return;
     }
 
     foundBook.copies -= quantity;
@@ -48,19 +53,20 @@ borrowRouter.post("/", async (req: Request<{}, {}, any>, res: Response) => {
       dueDate: dueDateObj,
     });
 
-    return res.status(201).json({
+    res.status(201).json({
       success: true,
       message: "Book borrowed successfully",
       data: borrow,
     });
   } catch (error) {
-    return res.status(500).json({
+    res.status(500).json({
       success: false,
       message: "Failed to borrow book",
       error: (error as Error).message,
     });
   }
 });
+
 
 borrowRouter.get("/summary", async (_req: Request, res: Response) => {
   try {

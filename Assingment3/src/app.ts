@@ -11,7 +11,7 @@ app.use(express.json());
 
 app.use(
   cors({
-    origin: ["https://assingment-client.vercel.app"],
+    origin: ["https://assingment-client.vercel.app", "http://localhost:5173"],
     credentials: true,
   })
 ); 

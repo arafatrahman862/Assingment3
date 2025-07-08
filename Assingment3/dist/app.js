@@ -10,7 +10,7 @@ const borrow_controller_1 = require("./app/controllers/borrow.controller");
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 app.use((0, cors_1.default)({
-    origin: ["https://assingment-client.vercel.app"],
+    origin: ["https://assingment-client.vercel.app", "http://localhost:5173"],
     credentials: true,
 }));
 app.use("/api/books", book_controller_1.bookRouter);

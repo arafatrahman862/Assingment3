@@ -11,57 +11,64 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.borrowRouter = void 0;
 const express_1 = require("express");
+const book_model_1 = require("../models/book.model");
 const borrow_model_1 = require("../models/borrow.model");
 exports.borrowRouter = (0, express_1.Router)();
-// borrowRouter.post("/", async (req: Request<{}, {}, any>, res: Response) => {
-//   const { book, quantity, dueDate } = req.body;
-//   if (!book || !quantity || !dueDate) {
-//     return res.status(400).json({
-//       success: false,
-//       message: "Missing required fields",
-//     });
-//   }
-//   const dueDateObj = new Date(dueDate);
-//   if (isNaN(dueDateObj.getTime())) {
-//     return res.status(400).json({
-//       success: false,
-//       message: "Invalid dueDate format",
-//     });
-//   }
-//   try {
-//     const foundBook = await Book.findById(book);
-//     if (!foundBook) {
-//       return res
-//         .status(404)
-//         .json({ success: false, message: "Book not found" });
-//     }
-//     if (foundBook.copies < quantity) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "Not enough copies available",
-//       });
-//     }
-//     foundBook.copies -= quantity;
-//     foundBook.available = foundBook.copies > 0;
-//     await foundBook.save();
-//     const borrow = await Borrow.create({
-//       book,
-//       quantity,
-//       dueDate: dueDateObj,
-//     });
-//     return res.status(201).json({
-//       success: true,
-//       message: "Book borrowed successfully",
-//       data: borrow,
-//     });
-//   } catch (error) {
-//     return res.status(500).json({
-//       success: false,
-//       message: "Failed to borrow book",
-//       error: (error as Error).message,
-//     });
-//   }
-// });
+exports.borrowRouter.post("/", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { book, quantity, dueDate } = req.body;
+    if (!book || !quantity || !dueDate) {
+        res.status(400).json({
+            success: false,
+            message: "Missing required fields",
+        });
+        return;
+    }
+    const dueDateObj = new Date(dueDate);
+    if (isNaN(dueDateObj.getTime())) {
+        res.status(400).json({
+            success: false,
+            message: "Invalid dueDate format",
+        });
+        return;
+    }
+    try {
+        const foundBook = yield book_model_1.Book.findById(book);
+        if (!foundBook) {
+            res.status(404).json({
+                success: false,
+                message: "Book not found",
+            });
+            return;
+        }
+        if (foundBook.copies < quantity) {
+            res.status(400).json({
+                success: false,
+                message: "Not enough copies available",
+            });
+            return;
+        }
+        foundBook.copies -= quantity;
+        foundBook.available = foundBook.copies > 0;
+        yield foundBook.save();
+        const borrow = yield borrow_model_1.Borrow.create({
+            book,
+            quantity,
+            dueDate: dueDateObj,
+        });
+        res.status(201).json({
+            success: true,
+            message: "Book borrowed successfully",
+            data: borrow,
+        });
+    }
+    catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Failed to borrow book",
+            error: error.message,
+        });
+    }
+}));
 exports.borrowRouter.get("/summary", (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const summary = yield borrow_model_1.Borrow.aggregate([
